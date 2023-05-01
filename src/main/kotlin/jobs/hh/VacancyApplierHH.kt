@@ -9,8 +9,10 @@ import org.openqa.selenium.By
 import org.openqa.selenium.remote.RemoteWebDriver
 
 
-class VacancyApplierHH(private val config : ConfigHH) : VacancyProcessor {
-    override var successApplicationCounter: Int = 0
+class VacancyApplierHH(private val coverLetter : String) : VacancyProcessor {
+    override var successApplicationCounter: Int = 1
+    /** HH.ru имеет суточный лимит на 200 Откликов. */
+    override val canContinueProcess: Boolean get() = successApplicationCounter <= 200
 
     override fun process(driver: RemoteWebDriver, rsl: VacancyApplicationResult) {
         driver.get(rsl.link)
@@ -37,7 +39,7 @@ class VacancyApplierHH(private val config : ConfigHH) : VacancyProcessor {
         // 1 - textarea уже РАЗВЁРНУТА - это нормально, иногда она Открыта по умолчанию.
         driver.tryWaitUntilClickableThenClick(1, By.cssSelector("button[data-qa='vacancy-response-letter-toggle']"))
 
-        driver.findElement(By.tagName("textarea")).sendKeys(config.coverLetter)
+        driver.findElement(By.tagName("textarea")).sendKeys(coverLetter)
         driver.findElement(By.cssSelector("button[data-qa='vacancy-response-submit-popup']")).click()
 
         if (driver.currentUrl == rsl.link) {

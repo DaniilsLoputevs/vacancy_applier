@@ -4,13 +4,13 @@ import jobs.personal.Config
 import java.io.File
 import java.io.FileWriter
 
-interface VacancyApplyPipeline<CONFIG> where CONFIG : Config<*> {
+interface VacancyApplyPipeline<CONFIG> where CONFIG : Config {
     fun execute(config: CONFIG, session: Session): List<VacancyApplicationResult>
 
-    fun pipelineName() : String = this.javaClass.simpleName
+    fun name() : String = this.javaClass.simpleName
 
-    fun readAppliedBeforeVacancies(config: CONFIG, session: Session): List<VacancyApplicationResult> {
-        val file = File(getFilePathAppliedBeforeVacancies(config, session))
+    fun readAppliedBeforeVacancies(configName : String,  session: Session): List<VacancyApplicationResult> {
+        val file = File(getFilePathAppliedBeforeVacancies(configName, session))
         return if (!file.exists()) emptyList()
         else file.useLines {
             it
@@ -26,18 +26,18 @@ interface VacancyApplyPipeline<CONFIG> where CONFIG : Config<*> {
     }
 
     fun writeAppliedBeforeVacancies(
-        config: CONFIG,
+        configName : String,
         session: Session,
         updatedAppliedBeforeVacancies: List<VacancyApplicationResult>
     ) {
-        val filePath = getFilePathAppliedBeforeVacancies(config, session)
+        val filePath = getFilePathAppliedBeforeVacancies(configName, session)
         FileWriter(filePath, false).use { writer ->
             updatedAppliedBeforeVacancies.forEach { writer.write("${it.link},${it.name}${"\r\n"}") }
         }
     }
 
-    private fun getFilePathAppliedBeforeVacancies(config: CONFIG, session: Session): String {
-        val fileName = "${this.pipelineName()}_${config.configName()}"
+    private fun getFilePathAppliedBeforeVacancies(configName : String, session: Session): String {
+        val fileName = "${this.name()}_${configName}"
         return "${session.appliedBeforeDirPath}/${fileName}.txt"
     }
 }

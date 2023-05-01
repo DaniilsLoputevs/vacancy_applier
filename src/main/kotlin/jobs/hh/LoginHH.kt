@@ -8,7 +8,7 @@ import org.openqa.selenium.remote.RemoteWebDriver
 import java.util.*
 
 
-fun loginHH(driver: RemoteWebDriver, loginDetails : LoginDetailsHH) {
+fun doLoginEmailAndPasswordHH(driver: RemoteWebDriver, loginDetails : LoginDetailsHH) {
     println("LOGIN :: RUN")
     driver.get(loginDetails.loginUrl)
 

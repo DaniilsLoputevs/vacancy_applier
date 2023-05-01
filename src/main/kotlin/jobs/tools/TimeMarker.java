@@ -12,7 +12,7 @@ import java.util.function.BiFunction;
  * This tool JUST WORK!!!
  *
  * @author Daniils Loputevs
- * @version 1.3 - 01.05.2023
+ * @version 1.3.1 - 02.05.2023
  */
 public class TimeMarker {
 
@@ -25,6 +25,10 @@ public class TimeMarker {
     
     public static void addMark(String name) {
         marks.add(new TimeMark(name, System.nanoTime()));
+    }
+    
+    public static void clear() {
+        marks.clear();
     }
     
     
@@ -96,7 +100,7 @@ public class TimeMarker {
     private static class TimeMark {
         private final String name;
         private final long timeNano;
-    
+        
         public TimeMark(String name, long timeNano) {
             this.name = name;
             this.timeNano = timeNano;

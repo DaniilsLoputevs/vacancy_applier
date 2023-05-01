@@ -3,7 +3,7 @@ package jobs.personal
 /**
  * Здесь указаны примеры значение конфига, больше информации о Параметрах конфига можно увидеть в файле [Config]
  */
-object ExampleConfigHH : ConfigHH() {
+object ExampleConfigHH : ConfigHH<LoginDetailsHH>() {
     override val coverLetter: String = "текст моего Сопроводительного письма"
     override val loginDetails: LoginDetailsHH = LoginDetailsHH(
         email = "my_hh_email@gmail.com",

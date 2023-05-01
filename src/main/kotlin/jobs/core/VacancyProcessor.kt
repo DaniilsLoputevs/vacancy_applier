@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit
 
 interface VacancyProcessor {
     var successApplicationCounter: Int
+    val canContinueProcess : Boolean
     fun process(driver: RemoteWebDriver, rsl: VacancyApplicationResult)
 }
 

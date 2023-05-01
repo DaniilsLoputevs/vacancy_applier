@@ -8,6 +8,7 @@ fun printVacancyResult(appliedResults: List<VacancyApplicationResult>) {
         println("### ${status.name} ###")
         appliedResults.copyFilterByStatus(status).printAsTable()
     }
+    println()
 }
 
 fun List<VacancyApplicationResult>.copyFilterByStatus(status: VacancyApplicationResult.Status) = this
@@ -17,7 +18,7 @@ fun List<VacancyApplicationResult>.copyFilterByStatus(status: VacancyApplication
 
 
 fun Collection<VacancyApplicationResult>.printAsTable() = PrintTable.of(this)
-    .name("Vacancy Info")
+    .name("Vacancy Application Result")
     .columnElemIndex()
     .column("NAME", VacancyApplicationResult::name)
     .column("LINK", VacancyApplicationResult::link)

@@ -1,11 +1,6 @@
 package jobs.personal
 
-interface Config<LOGIN_DETAILS> {
-    /**
-     * Информация о Логине на платформу
-     * Generic т.к. для Потенциально для разных платформ оно может быть Разным.
-     */
-    val loginDetails: LOGIN_DETAILS
+interface Config {
 
     /**
      * Список Базовых/Корневых Поисковых Ссылок.
@@ -36,13 +31,44 @@ interface Config<LOGIN_DETAILS> {
      * Имя конфига, используется для создания/записи/чтения файлов свяазных с этим Конфигом.
      * Можно считать что это configId.
      */
-    fun configName() : String = this.javaClass.simpleName
+    fun name(): String = this.javaClass.simpleName
 }
 
 /**
  * Класс для общих значений между совершенно разными конфигами.
  */
-abstract class BaseConfig<LOGIN_DETAILS> : Config<LOGIN_DETAILS> {
+abstract class BaseConfig : Config
+
+
+/* Platform Config Classes */
+
+
+abstract class ConfigHH<LOGIN_DETAILS> : BaseConfig() {
+
+    /**
+     * Информация о Логине на платформу
+     * Generic т.к. для Потенциально для разных платформ оно может быть Разным.
+     */
+    abstract val loginDetails: LOGIN_DETAILS
+
+    /**
+     * Список вакансий на Которые НЕ НУЖНО откликаться, например:
+     * Вака раза 2+ попадается в поиске и там Вопросы и Релокация.
+     * Что бы, не гасить быстродействие, такие ваки можно Ручками добавлять в этот список.
+     *
+     * ВНИМАНИЕ!!! значения ссылок должны быть в Короткой форме, без Query Parameters.
+     *
+     * Key - ссылка на вакансию.
+     * Val - описание Почему эта ссылка в Исключениях.
+     */
+    abstract val excludeVacancyLinks: Map<String, String>
 
 }
+
+class LoginDetailsHH(
+    val email: String,
+    val password: String,
+    val loginUrl: String = "https://hh.ru/account/login",
+    val captchaWaitingSec: Long,
+)
 
