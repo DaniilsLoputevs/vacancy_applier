@@ -1,6 +1,7 @@
 package jobs
 
-import jobs.core.Session
+import jobs.core.exe
+import jobs.core.session
 import jobs.hh.PrimaryPipelineHH
 import jobs.personal.ExampleConfigHH
 import org.junit.jupiter.api.Test
@@ -10,8 +11,8 @@ class RunExample {
 
 
     @Test fun runExampleHH() {
-        Session(workDirPath).use {
-            PrimaryPipelineHH.execute(ExampleConfigHH, it)
+        session(workDirPath) {
+            exe(PrimaryPipelineHH, ExampleConfigHH)
         }
     }
 

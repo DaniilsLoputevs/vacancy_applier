@@ -5,9 +5,9 @@ package jobs.personal
  * Здесь указаны примеры значение конфига, больше информации о Параметрах конфига можно увидеть в файле [Config]
  */
 
-object ExampleConfigHH : ConfigHH<LoginDetailsHH>(
+object ExampleConfigHH : ConfigHH(
     coverLetter = "текст вашего Сопроводительного письма",
-    loginDetails = LoginDetailsHH(
+    loginDetails = EmailPasswordHH(
         email = "my_hh_email@gmail.com",
         password = "my_hh_super_secret_password_123^",
         captchaWaitingSec = 120,
@@ -27,7 +27,7 @@ object ExampleConfigHH : ConfigHH<LoginDetailsHH>(
     baseSearchLinks = listOf(
         "https://hh.ru/search/vacancy?text=Java+Kotlin&from=suggest_post&salary=&employment=full&schedule=remote&schedule=fullDay&clusters=true&professional_role=96&no_magic=true&ored_clusters=true&items_on_page=20&enable_snippets=true",
         "https://hh.ru/search/vacancy?area=97&area=48&area=1001&area=28&area=9&area=40&area=5&employment=full&schedule=remote&search_field=name&search_field=company_name&search_field=description&text=Java+developer&no_magic=true&L_save_area=true&items_on_page=20",
-        ),
+    ),
 
     /**
      * Этот параметр Опционален!

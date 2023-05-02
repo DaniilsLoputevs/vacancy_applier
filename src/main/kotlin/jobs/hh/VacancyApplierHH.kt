@@ -2,15 +2,15 @@ package jobs.hh
 
 import jobs.core.VacancyApplicationResult
 import jobs.core.VacancyProcessor
-import jobs.personal.ConfigHH
 import jobs.tools.openNewTab
 import jobs.tools.tryWaitUntilClickableThenClick
 import org.openqa.selenium.By
 import org.openqa.selenium.remote.RemoteWebDriver
 
 
-class VacancyApplierHH(private val coverLetter : String) : VacancyProcessor {
+class VacancyApplierHH(private val coverLetter: String) : VacancyProcessor {
     override var successApplicationCounter: Int = 1
+
     /** HH.ru имеет суточный лимит на 200 Откликов. */
     override val canContinueProcess: Boolean get() = successApplicationCounter <= 200
 

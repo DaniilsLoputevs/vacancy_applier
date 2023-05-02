@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 import static jobs.tools.CellColour.*;
 
 /**
-
  * <p>
  * Class for (formatting || print || log || debug) Collection<Object> in pretty table human-readable view.
  * Implements the Builder pattern.
@@ -281,7 +280,7 @@ public class PrintTable<E> {
     
     
     /* SUPPORT CLASSES */
-   
+    
 }
 
 
@@ -352,7 +351,7 @@ class Column<E, CVT> {
  *  }</>
  */
 @SuppressWarnings("unchecked")
-  class ColumnOptions<E> {
+class ColumnOptions<E> {
     private AlignSide alignSide;
     private String minWidth;
     private final List<CellColour<E>> cellColours = new ArrayList<>();
@@ -368,7 +367,7 @@ class Column<E, CVT> {
     // todo - doc
     public ColumnOptions<E> align(AlignSide side) {
         this.alignSide = side;
-        return  this;
+        return this;
     }
     
     // todo - doc
@@ -385,7 +384,7 @@ class Column<E, CVT> {
     @SuppressWarnings("rawtypes")
     public ColumnOptions<E> cellColours(Colour colour, Predicate<E> check) {
         this.cellColours.add(new CellColour(colour, check));
-        return  this;
+        return this;
     }
     
     // todo - doc
@@ -408,7 +407,8 @@ class Column<E, CVT> {
     }
     
 }
- class DefaultFormatterBuilder {
+
+class DefaultFormatterBuilder {
     /** @see DefaultFormatterBuilder#decimal(String) */
     public static Function<? super Number, String> decimal() {
         return decimal("####.0000");
@@ -455,7 +455,7 @@ class Column<E, CVT> {
 }
 
 // todo - doc
- class CellColour<E> {
+class CellColour<E> {
     private final Colour colour;
     private final Predicate<E> check;
     
@@ -493,12 +493,12 @@ class Column<E, CVT> {
             BACKGROUND_WHITE = "\u001B[47m";
 }
 
- enum AlignSide {LEFT, RIGHT}
+enum AlignSide {LEFT, RIGHT}
 
 /**
  * colourise string -> always add 9 char for {@code String.length()}.
  */
- enum Colour {
+enum Colour {
     BLACK(TEXT_BLACK),
     RED(TEXT_RED),
     GREEN(TEXT_GREEN),

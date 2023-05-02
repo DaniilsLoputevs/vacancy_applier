@@ -7,9 +7,9 @@ import java.io.FileWriter
 interface VacancyApplyPipeline<CONFIG> where CONFIG : Config {
     fun execute(config: CONFIG, session: Session): List<VacancyApplicationResult>
 
-    fun name() : String = this.javaClass.simpleName
+    fun name(): String = this.javaClass.simpleName
 
-    fun readAppliedBeforeVacancies(configName : String,  session: Session): List<VacancyApplicationResult> {
+    fun readAppliedBeforeVacancies(configName: String, session: Session): List<VacancyApplicationResult> {
         val file = File(getFilePathAppliedBeforeVacancies(configName, session))
         return if (!file.exists()) emptyList()
         else file.useLines {
@@ -26,7 +26,7 @@ interface VacancyApplyPipeline<CONFIG> where CONFIG : Config {
     }
 
     fun writeAppliedBeforeVacancies(
-        configName : String,
+        configName: String,
         session: Session,
         updatedAppliedBeforeVacancies: List<VacancyApplicationResult>
     ) {
@@ -36,7 +36,7 @@ interface VacancyApplyPipeline<CONFIG> where CONFIG : Config {
         }
     }
 
-    private fun getFilePathAppliedBeforeVacancies(configName : String, session: Session): String {
+    private fun getFilePathAppliedBeforeVacancies(configName: String, session: Session): String {
         val fileName = "${this.name()}_${configName}"
         return "${session.appliedBeforeDirPath}/${fileName}.txt"
     }

@@ -5,25 +5,27 @@ import jobs.core.VacancyApplicationResult
 import jobs.core.VacancyApplierSafe
 import jobs.core.VacancyApplyPipeline
 import jobs.personal.ConfigHH
-import jobs.personal.LoginDetailsHH
+import jobs.personal.EmailPasswordHH
 import jobs.tools.ConsoleScanner
 import jobs.tools.TimeMarker
 import jobs.tools.oneNewChromeBrowser
 import jobs.tools.printVacancyResult
 
 
-object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH<LoginDetailsHH>> {
+object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH> {
     private const val TIME_MARK__APP_RUN = "### APP RUN ###"
     private const val TIME_MARK__APP_END = "### APP END ###"
 
-    override fun execute(config: ConfigHH<LoginDetailsHH>, session: Session): List<VacancyApplicationResult> {
+    override fun execute(config: ConfigHH, session: Session): List<VacancyApplicationResult> {
         println("PIPELINE :: RUN")
         val driver = oneNewChromeBrowser()
         TimeMarker.addMark(TIME_MARK__APP_RUN)
         var currVacancyIndex = 0
         var currPageIndex = 0
 
-        doLoginEmailAndPasswordHH(driver, config.loginDetails)
+        when (config.loginDetails) {
+            is EmailPasswordHH -> doLoginEmailAndPasswordHH(driver, config.loginDetails)
+        }
         val vacancyApplier = VacancyApplierSafe(VacancyApplierHH(config.coverLetter))
         val consoleScanner = ConsoleScanner
 

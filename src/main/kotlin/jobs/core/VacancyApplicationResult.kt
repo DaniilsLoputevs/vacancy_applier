@@ -5,7 +5,7 @@ class VacancyApplicationResult(
     var name: String,
     var link: String,
     var applyStatus: Status = Status.UNKNOWN,
-    var pageIndex : Int = -1,
+    var pageIndex: Int = -1,
 ) {
     var applyOrder: Int = -1
     var applyException: Throwable? = null

@@ -4,8 +4,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.PrintStream
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -35,15 +33,7 @@ object ConsoleScanner {
 
 
 // https://stackoverflow.com/questions/4334808/how-could-i-read-java-console-output-into-a-string-buffer
-open class SystemOutInterceptor(
-    printStream: PrintStream,
-    logDirPath: String,
-    isDebug: Boolean
-) : PrintStream(printStream) {
-
-    private var logFileNameStrategy: () -> String = { "${maybeDebugPrefix}session_${startDateTime}.txt" }
-
-    private val logFile by lazy { File("${logDirPath}/${logFileNameStrategy.invoke()}") }
+class PrintStreamProxyWriteToFile(printStream: PrintStream, private val file: File) : PrintStream(printStream) {
 
 
     override fun println(x: String?) {
@@ -61,8 +51,6 @@ open class SystemOutInterceptor(
         return super.printf(format, *args)
     }
 
-    private val maybeDebugPrefix = (if (isDebug) "debug_" else "")
-    private val startDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm"))
 
-    private fun fileAppendLine(content: String) = logFile.appendText(content + System.lineSeparator())
+    private fun fileAppendLine(content: String) = file.appendText(content + System.lineSeparator())
 }

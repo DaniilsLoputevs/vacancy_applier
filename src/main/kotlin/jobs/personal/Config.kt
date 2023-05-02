@@ -36,12 +36,21 @@ open class Config(
 /* Platform Config Classes */
 
 
-abstract class ConfigHH<LOGIN_DETAILS>(
+abstract class ConfigHH(
     /**
-     * Информация о Логине на платформу
-     * Generic т.к. для Потенциально для разных платформ оно может быть Разным.
+     * Информация о Логине на платформе HH.ru
+     * [LoginDetailsHH] это Базовый тип, для всех реализаций Конфиг для логина.
+     * Важно! Тут могут быть кардинально разные класс и их структура.
+     * Стоит обрабатывать этот параметр через паттерн стратегия + when.
+     * Пример:
+     * ```
+     * when (config.loginDetails){
+     *  is loginDetailsTypeOne -> loginHHTypeOne
+     *  is loginDetailsTypeTwo -> loginHHTypeTwo
+     *  }
+     * ```
      */
-    val loginDetails: LOGIN_DETAILS,
+    val loginDetails: LoginDetailsHH,
 
     /**
      * Список вакансий на Которые НЕ НУЖНО откликаться, например:
@@ -60,11 +69,11 @@ abstract class ConfigHH<LOGIN_DETAILS>(
     override val uselessVacancyNames: Set<String>,
 ) : Config(baseSearchLinks, coverLetter, uselessVacancyNames)
 
+sealed interface LoginDetailsHH
 
-class LoginDetailsHH(
+class EmailPasswordHH(
     val email: String,
     val password: String,
     val loginUrl: String = "https://hh.ru/account/login",
     val captchaWaitingSec: Long,
-)
-
+) : LoginDetailsHH
