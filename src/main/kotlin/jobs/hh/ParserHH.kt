@@ -1,12 +1,12 @@
 package jobs.hh
 
-import jobs.core.PlatformParser
-import jobs.core.VacancyApplicationResult
-import jobs.core.VacancyPageParser
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.response
 import it.skrape.fetcher.skrape
+import jobs.core.PlatformParser
+import jobs.core.VacancyApplicationResult
+import jobs.core.VacancyPageParser
 import jobs.tools.TimeMarker
 import java.util.concurrent.CompletableFuture
 
@@ -17,7 +17,17 @@ val HH_PAGE_USELESS_ELEMENT_TEXT_LIST = setOf(
 )
 
 class ScrapItHHParser(hhBaseSearchUrl: String) : PlatformParser<HHPageParser> {
-    val hhBaseSearchUrlWithoutPage = hhBaseSearchUrl
+    /**
+     * Опция HH.ru "Кол-во вакансий на странице: [20, 50, 100]"
+     * В принципе, можно доставать по 50, загрузка первой странице происходит асинхронно в другом потоке
+     * и страница будет Готов к моменту её надобности.(закончилась предыдущая, нужно следующая если есть)
+     * Зато меньше Запросов в сеть и меньше качать ненужных сопроводительных данных.
+     * Например, на 1 000 вакансий:
+     * по 20  -> 1 000 / 20  = 50 (запросов в сеть)
+     * по 50  -> 1 000 / 50  = 20 (запросов в сеть) - выглядит Оптимальным кол-во запросов на кол-во вакансий
+     * по 100 -> 1 000 / 100 = 10 (запросов в сеть)
+     */
+    val hhBaseSearchUrlWithoutPage = hhBaseSearchUrl.replace("items_on_page=20", "items_on_page=50")
     val pageCountSize by lazy {
         skrape(HttpFetcher) {
             request { url = hhBaseSearchUrl }

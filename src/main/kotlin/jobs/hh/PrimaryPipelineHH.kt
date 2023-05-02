@@ -28,7 +28,7 @@ object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH<LoginDetailsHH>> {
         val consoleScanner = ConsoleScanner
 
         println("PIPELINE# read store of applied_before vacancies :: RUN")
-        val appliedBeforeVacanciesMap = readAppliedBeforeVacancies(config.name(), session).associateBy { it.link }
+        val appliedBeforeVacanciesMap = readAppliedBeforeVacancies(config.name, session).associateBy { it.link }
         println("Загружено с диска, кол-во Вакансий со статусом APPLIED_NOW: ${appliedBeforeVacanciesMap.size}")
         println("PIPELINE# read store of applied_before vacancies :: END")
 
@@ -93,7 +93,7 @@ object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH<LoginDetailsHH>> {
             }
 
         val allAppliedBeforeVacancies = (appliedBeforeVacanciesMap.values + foundedAppliedVacancies)
-        writeAppliedBeforeVacancies(config.name(), session, allAppliedBeforeVacancies)
+        writeAppliedBeforeVacancies(config.name, session, allAppliedBeforeVacancies)
         println("PIPELINE# update store of applied_before vacancies :: END")
 
         println("PIPELINE :: END")
