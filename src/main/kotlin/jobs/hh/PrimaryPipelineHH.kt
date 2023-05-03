@@ -8,7 +8,7 @@ import jobs.personal.ConfigHH
 import jobs.personal.EmailPasswordHH
 import jobs.tools.ConsoleScanner
 import jobs.tools.TimeMarker
-import jobs.tools.oneNewChromeBrowser
+import jobs.tools.openNewBrowserWindow
 import jobs.tools.printVacancyResult
 
 
@@ -18,7 +18,7 @@ object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH> {
 
     override fun execute(config: ConfigHH, session: Session): List<VacancyApplicationResult> {
         println("PIPELINE :: RUN")
-        val driver = oneNewChromeBrowser()
+        val driver = openNewBrowserWindow(config.browser)
         TimeMarker.addMark(TIME_MARK__APP_RUN)
         var currVacancyIndex = 0
         var currPageIndex = 0

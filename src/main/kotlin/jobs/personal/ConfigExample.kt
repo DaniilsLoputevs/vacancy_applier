@@ -50,4 +50,11 @@ object ExampleConfigHH : ConfigHH(
         "Database Developer",
         ".Net", ".NET", "C#",
     ),
+
+    /**
+     * Выбор какой браузер использовать.
+     * На вашем компьютере должен быть установлен выбранный браузер.
+     * На выбор: [ GOOGLE_CHROME, MOZILLA_FIREFOX, SAFARI, EDGE ]
+     */
+    browser = BrowserType.GOOGLE_CHROME
 )

@@ -1,8 +1,12 @@
 package jobs.tools
 
+import jobs.personal.BrowserType
 import org.openqa.selenium.*
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.edge.EdgeDriver
+import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.remote.RemoteWebDriver
+import org.openqa.selenium.safari.SafariDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.time.Duration
@@ -38,9 +42,13 @@ val WebDriverException?.toStringClassAndElem: String
 
 /* Driver extensions */
 
-fun oneNewChromeBrowser(): ChromeDriver = ChromeDriver().apply {
-    this.manage().window().maximize()
-}
+
+fun openNewBrowserWindow(browser: BrowserType): RemoteWebDriver = when (browser) {
+    BrowserType.GOOGLE_CHROME -> ChromeDriver()
+    BrowserType.MOZILLA_FIREFOX -> FirefoxDriver()
+    BrowserType.MICROSOFT_EDGE -> EdgeDriver()
+    BrowserType.SAFARI -> SafariDriver()
+}.also { it.manage().window().maximize() }
 
 fun RemoteWebDriver.openNewTab(): Unit = this.run { this.switchTo().newWindow(WindowType.TAB) }
 

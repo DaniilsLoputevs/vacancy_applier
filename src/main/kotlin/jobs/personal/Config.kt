@@ -24,6 +24,13 @@ open class Config(
      * Например: [".Net", "C#", "JS", ... ]
      */
     open val uselessVacancyNames: Set<String>,
+
+    /**
+     * Выбор какой браузер использовать.
+     * На вашем компьютере должен быть установлен выбранный браузер.
+     * На выбор: [ GOOGLE_CHROME, MOZILLA_FIREFOX, SAFARI, EDGE ]
+     */
+    open val browser: BrowserType
 ) {
     /**
      * Имя конфига, используется для создания/записи/чтения файлов свяазных с этим Конфигом.
@@ -31,6 +38,8 @@ open class Config(
      */
     val name: String = this.javaClass.simpleName
 }
+
+enum class BrowserType { GOOGLE_CHROME, MOZILLA_FIREFOX, MICROSOFT_EDGE, SAFARI  }
 
 
 /* Platform Config Classes */
@@ -67,7 +76,8 @@ abstract class ConfigHH(
     override val baseSearchLinks: List<String>,
     override val coverLetter: String,
     override val uselessVacancyNames: Set<String>,
-) : Config(baseSearchLinks, coverLetter, uselessVacancyNames)
+    override val browser: BrowserType,
+) : Config(baseSearchLinks, coverLetter, uselessVacancyNames, browser)
 
 sealed interface LoginDetailsHH
 
