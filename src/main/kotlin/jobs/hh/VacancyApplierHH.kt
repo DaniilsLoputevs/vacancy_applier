@@ -11,7 +11,7 @@ import org.openqa.selenium.remote.RemoteWebDriver
 class VacancyApplierHH(private val coverLetter: String) : VacancyProcessor {
     override var successApplicationCounter: Int = 1
 
-    /** HH.ru имеет суточный лимит на 200 Откликов. */
+    /** HH.ru have 24 hours limit for vacancy application : 200 application for vacancy from one user. */
     override val canContinueProcess: Boolean get() = successApplicationCounter <= 200
 
     override fun process(driver: RemoteWebDriver, rsl: VacancyApplicationResult) {

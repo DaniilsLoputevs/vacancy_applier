@@ -28,16 +28,11 @@ fun WebElement.logIt() = println(this.asStr)
 fun WebElement.logItRoot() = println(this.asStrRoot)
 
 
-val WebDriverException?.toStringClassAndElem: String
-    get() =
-        try {
-            if (this == null) "null"
-            else if (this is TimeoutException) this.toString().split("\n")[0].substring(38) // обрезаем Класс ошибки
-            else this.javaClass.simpleName + this.toString().apply { this.substring(this.indexOf("->")) }
-        } catch (exception: Exception) {
-            println(exception.javaClass.simpleName)
-            exception.toString()
-        }
+// org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {"method":"tag name","selector":"textarea"}
+// org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {"method":"tag name","selector":"textarea"}
+// java.util.NoSuchElementException: Sequence contains no element matching the predicate.
+val WebDriverException?.toStringCompact: String
+    get() = if (this == null) "null" else this.toString().split("\n")[0]
 
 
 /* Driver extensions */
@@ -62,7 +57,7 @@ fun RemoteWebDriver.tryWaitUntilClickableThenClick(seconds: Long, selector: By) 
         this.waitUntilClickable(seconds, selector)
         this.findElement(selector).click()
     } catch (exception: WebDriverException) {
-        System.err.println(exception.toStringClassAndElem)
+        System.err.println(exception.toStringCompact)
     }
 }
 

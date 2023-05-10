@@ -31,7 +31,7 @@ object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH> {
 
         println("PIPELINE# read store of applied_before vacancies :: RUN")
         val appliedBeforeVacanciesMap = readAppliedBeforeVacancies(config.name, session).associateBy { it.link }
-        println("Загружено с диска, кол-во Вакансий со статусом APPLIED_NOW: ${appliedBeforeVacanciesMap.size}")
+        println("count => loaded vacancies from store of applied_before vacancies : ${appliedBeforeVacanciesMap.size}")
         println("PIPELINE# read store of applied_before vacancies :: END")
 
 
@@ -75,8 +75,8 @@ object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH> {
 
         println("PIPELINE# show result :: RUN")
         println("### SHOW RESULT ###")
-        println("Было загружено с диска и проигнорировано в обработке, Вакансий со статусом APPLIED_BEFORE: ${appliedBeforeVacanciesMap.size}")
-        println("Было подано заявок на такое кол-во вакансий: ${vacancyApplier.successApplicationCounter - 1}") // -1 т.к. был increment
+        println("count => loaded vacancies from store of applied_before vacancies : ${appliedBeforeVacanciesMap.size}")
+        println("count => vacancies applied : ${vacancyApplier.successApplicationCounter - 1}") // -1 т.к. был increment todo - проверить правдивость
         TimeMarker.printMarks()
         TimeMarker.printBetweenMarks(TIME_MARK__APP_RUN, TIME_MARK__APP_END)
         TimeMarker.clear()

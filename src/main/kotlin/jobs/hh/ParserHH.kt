@@ -8,8 +8,10 @@ import jobs.core.PlatformParser
 import jobs.core.VacancyApplicationResult
 import jobs.core.VacancyPageParser
 import jobs.tools.TimeMarker
+import jobs.tools.tryAnyException
 import java.util.concurrent.CompletableFuture
 
+// todo - ээээм... а как это блин парсить на другом языке?
 val HH_PAGE_USELESS_ELEMENT_TEXT_LIST = setOf(
     "По вашему запросу ещё будут появляться новые вакансии. Присылать вам?",
     "Быстрые фильтры",
@@ -52,19 +54,20 @@ class ScrapItHHParser(hhBaseSearchUrl: String) : PlatformParser<HHPageParser> {
 
         private fun updateCurrentPage(): CompletableFuture<HHPageParser> {
             TimeMarker.addMark("HHPage iterator next() - update future SUPPLY")
-            return if (hasNext()) CompletableFuture.supplyAsync {
-                TimeMarker.addMark("HHPage iterator updateCurrentPage() - RUN")
-                val rsl = HHPageParser("${hhBaseSearchUrlWithoutPage}&page=${pageCursorIndex++}")
-                TimeMarker.addMark("HHPage iterator updateCurrentPage() - RUN")
-                return@supplyAsync rsl
-            }
+            return if (hasNext())
+                CompletableFuture.supplyAsync {
+                    return@supplyAsync HHPageParser("$hhBaseSearchUrlWithoutPage&page=${pageCursorIndex++}")
+                }.exceptionally {
+                    it.printStackTrace(System.out)
+                    return@exceptionally null
+                }
             else CompletableFuture.completedFuture(null)
         }
     }
 }
 
 class HHPageParser(val hhPageUrl: String) : VacancyPageParser {
-    private val vacancies = takeAllH3ElementsOnPage(hhPageUrl)
+    private val vacancies = tryAnyException({ takeAllH3ElementsOnPage(hhPageUrl) }, { emptyList() })
         .asSequence()
         .filter { it.text !in HH_PAGE_USELESS_ELEMENT_TEXT_LIST }
         .map {

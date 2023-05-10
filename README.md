@@ -51,3 +51,84 @@
 Так же не забываем скинуть последний лог файла из папки с логами.
 
 П.с. эта программа не имеет Main класса и запускается только как test case, как скрипт с пред настройками из IDEA.
+
+
+<details>
+<summary>World</summary>
+<blockquote>
+    :smile:
+</blockquote>
+</details>
+
+
+
+
+
+<details><summary>World</summary>
+
+    :smile:
+
+</details>
+
+
+
+
+
+
+[//]: # ()
+[//]: # (<details>)
+
+[//]: # (sdfasfasf)
+
+[//]: # (</details>)
+
+[//]: # ()
+[//]: # (<ol>)
+
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ([//]: # &#40;<li> &#41;)
+[//]: # ([//]: # &#40;<details>&#41;)
+[//]: # ([//]: # &#40;<summary>Hello</summary>&#41;)
+[//]: # ([//]: # &#40;<blockquote>&#41;)
+[//]: # (  <details>)
+
+[//]: # (sgasgasgasg)
+
+[//]: # (</details>)
+
+[//]: # ()
+[//]: # ([//]: # &#40;</blockquote>&#41;)
+[//]: # ()
+[//]: # ([//]: # &#40;</details>&#41;)
+[//]: # ()
+[//]: # ([//]: # &#40;</li>&#41;)
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (<li> <details><summary>Hello</summary><blockquote>)
+
+[//]: # (  <details><summary>World</summary><blockquote>)
+
+[//]: # (    :smile:)
+
+[//]: # (  </blockquote></details>)
+
+[//]: # (</blockquote></details>)
+
+[//]: # (</li>)
+
+[//]: # (<li> <details><summary>Hello</summary><blockquote>)
+
+[//]: # (  <details><summary>World</summary><blockquote>)
+
+[//]: # (    :smile:)
+
+[//]: # (  </blockquote></details>)
+
+[//]: # (</blockquote></details>)
+
+[//]: # (</li>)
+
+[//]: # (</ol>)

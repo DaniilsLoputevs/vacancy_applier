@@ -1,5 +1,8 @@
 package jobs.core
 
+import jobs.tools.toStringCompact
+import org.openqa.selenium.WebDriverException
+
 
 class VacancyApplicationResult(
     var name: String,
@@ -12,10 +15,12 @@ class VacancyApplicationResult(
     var applyExecutionTimeSec: Long = -1
 
     fun exceptionToString(): String {
-        return if (applyException == null) "null"
-        else try {
-            applyException!!.javaClass.simpleName + " " +
-                    applyException.toString().let { it.substring(it.indexOf("->")) }
+        return try {
+            when (applyException) {
+                null -> "null"
+                is WebDriverException -> (applyException as WebDriverException).toStringCompact
+                else -> applyException.toString()
+            }
         } catch (e: Exception) {
             applyException.toString()
         }
