@@ -53,22 +53,30 @@
 П.с. эта программа не имеет Main класса и запускается только как test case, как скрипт с пред настройками из IDEA.
 
 
-<details>
-<summary>World</summary>
-<blockquote>
-    :smile:
-</blockquote>
-</details>
+[//]: # (<details>)
 
+[//]: # (<summary>World</summary>)
 
+[//]: # (<blockquote>)
 
+[//]: # (    :smile:)
 
+[//]: # (</blockquote>)
 
-<details><summary>World</summary>
+[//]: # (</details>)
 
-    :smile:
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # ()
+[//]: # (<details><summary>World</summary>)
 
-</details>
+[//]: # ()
+[//]: # (    :smile:)
+
+[//]: # ()
+[//]: # (</details>)
 
 
 
