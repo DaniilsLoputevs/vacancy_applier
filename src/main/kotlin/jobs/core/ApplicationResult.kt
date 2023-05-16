@@ -1,10 +1,11 @@
 package jobs.core
 
+import jobs.tools.PrintTable
 import jobs.tools.toStringCompact
 import org.openqa.selenium.WebDriverException
 
 
-class VacancyApplicationResult(
+class ApplicationResult(
     var name: String,
     var link: String,
     var applyStatus: Status = Status.UNKNOWN,
@@ -36,3 +37,14 @@ class VacancyApplicationResult(
     }
 
 }
+
+fun Collection<ApplicationResult>.printAsTable() = PrintTable.of(this)
+    .name("Vacancy Application Result")
+    .columnElemIndex()
+    .column("NAME", ApplicationResult::name)
+    .column("LINK", ApplicationResult::link)
+    .column("PAGE", ApplicationResult::pageIndex)
+    .column("STATUS", ApplicationResult::applyStatus)
+    .column("EXCEPTION", ApplicationResult::exceptionToString)
+    .column("TIME(SEC)", ApplicationResult::applyExecutionTimeSec)
+    .print()

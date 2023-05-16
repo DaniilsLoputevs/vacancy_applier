@@ -1,47 +1,45 @@
 package jobs.hh
 
-import jobs.core.Session
-import jobs.core.VacancyApplicationResult
-import jobs.core.VacancyApplierSafe
-import jobs.core.VacancyApplyPipeline
+import jobs.core.*
 import jobs.personal.ConfigHH
 import jobs.personal.EmailPasswordHH
 import jobs.tools.ConsoleScanner
 import jobs.tools.TimeMarker
 import jobs.tools.openNewBrowserWindow
-import jobs.tools.printVacancyResult
 
 
 object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH> {
     private const val TIME_MARK__APP_RUN = "### APP RUN ###"
     private const val TIME_MARK__APP_END = "### APP END ###"
 
-    override fun execute(config: ConfigHH, session: Session): List<VacancyApplicationResult> {
+    override fun execute(config: ConfigHH, session: Session): PipelineResult {
         println("PIPELINE :: RUN")
         val driver = openNewBrowserWindow(config.browser)
         TimeMarker.addMark(TIME_MARK__APP_RUN)
-        var currVacancyIndex = 0
-        var currPageIndex = 0
 
         when (config.loginDetails) {
             is EmailPasswordHH -> doLoginEmailAndPasswordHH(driver, config.loginDetails)
         }
+        val result = PipelineResult(this, config, session)
         val vacancyApplier = VacancyApplierSafe(VacancyApplierHH(config.coverLetter))
         val consoleScanner = ConsoleScanner
+        val appliedBeforeVacanciesLoader =
+            AppliedBeforeVacanciesLoader(session.appliedBeforeDirPath, this.name(), config.name)
 
         println("PIPELINE# read store of applied_before vacancies :: RUN")
-        val appliedBeforeVacanciesMap = readAppliedBeforeVacancies(config.name, session).associateBy { it.link }
+        val appliedBeforeVacanciesMap = appliedBeforeVacanciesLoader.readAll().associateBy { it.link }
         println("count => loaded vacancies from store of applied_before vacancies : ${appliedBeforeVacanciesMap.size}")
         println("PIPELINE# read store of applied_before vacancies :: END")
 
 
         println("PIPELINE# process vacancies :: RUN")
+        var currVacancyIndex = 0
+        var currPageIndex = 0
         /*
         * Если как-нибудь Гребаный Рандомный Exception и решит Прикольнуться и сломать боевой запуск!
-        * Мы его Поймаем и Отшлёпаем по Жопе!!!
+        * Мы его Поймаем и Отшлёпаем по Попе!!!
         * он НЕ ЗА РУИНИТ printResult!!!
         */
-        val vacancyApplyResults = mutableListOf<VacancyApplicationResult>()
         try {
             config.baseSearchLinks
                 .asSequence()
@@ -50,21 +48,17 @@ object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH> {
                 .onEach { println("current page: ${currPageIndex++} - ${it.hhPageUrl}") } // log
                 .flatten()
 
-                .onEach {
-                    if (appliedBeforeVacanciesMap.containsKey(it.link))
-                        it.applyStatus = VacancyApplicationResult.Status.APPLIED_BEFORE
-                }
+                .filterNot { appliedBeforeVacanciesMap.containsKey(it.link) }
                 .filterNot { config.excludeVacancyLinks.containsKey(it.link) }
-                .filterNot { it.applyStatus == VacancyApplicationResult.Status.APPLIED_BEFORE }
                 .filterNot { tag -> config.uselessVacancyNames.any { tag.name.contains(it, true) } }
 
                 .takeWhile { vacancyApplier.canContinueProcess }
-                .takeWhile { consoleScanner.isContinue() } // при запуске из Test это не работает.
+                .takeWhile { consoleScanner.isContinue() } /* Not working if project run from Tests. */
 
                 .onEach { it.pageIndex = currPageIndex }
                 .onEach { println("current vacancy : ${currVacancyIndex++} - ${it.name}(${it.link})") } // log
                 .onEach { vacancyApplier.process(driver, it) }
-                .forEach(vacancyApplyResults::add) // terminate
+                .forEach(result::plusAssign) // terminate
         } catch (e: Exception) {
             println("ERR: Pipeline exit with exception")
             e.printStackTrace(System.out) // что бы не нарушать порядок логов + записать.
@@ -73,33 +67,27 @@ object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH> {
 
         TimeMarker.addMark(TIME_MARK__APP_END)
 
-        println("PIPELINE# show result :: RUN")
+        println("PIPELINE# print result :: RUN")
         println("### SHOW RESULT ###")
         println("count => loaded vacancies from store of applied_before vacancies : ${appliedBeforeVacanciesMap.size}")
-        println("count => vacancies applied : ${vacancyApplier.successApplicationCounter - 1}") // -1 т.к. был increment todo - проверить правдивость
+        println("count => vacancies applied : ${vacancyApplier.successApplicationCounter}")
         TimeMarker.printMarks()
         TimeMarker.printBetweenMarks(TIME_MARK__APP_RUN, TIME_MARK__APP_END)
         TimeMarker.clear()
-        printVacancyResult(vacancyApplyResults)
+        PipelineResultPrinter().print(result)
         println("PIPELINE# show result :: END")
 
 
         println("PIPELINE# update store of applied_before vacancies :: RUN")
-        val foundedAppliedVacancies = vacancyApplyResults.toList()
-            .filter {
-                when (it.applyStatus) {
-                    VacancyApplicationResult.Status.APPLIED_BEFORE -> true
-                    VacancyApplicationResult.Status.APPLIED_NOW -> true
-                    else -> false
-                }
-            }
-
-        val allAppliedBeforeVacancies = (appliedBeforeVacanciesMap.values + foundedAppliedVacancies)
-        writeAppliedBeforeVacancies(config.name, session, allAppliedBeforeVacancies)
+        val newAppliedBeforeVacancies = sequenceOf(
+            result[ApplicationResult.Status.APPLIED_NOW],
+            result[ApplicationResult.Status.APPLIED_NOW]
+        ).flatten().toList()
+        appliedBeforeVacanciesLoader.writeAppendAll(newAppliedBeforeVacancies)
         println("PIPELINE# update store of applied_before vacancies :: END")
 
         println("PIPELINE :: END")
-        return vacancyApplyResults
+        return result
     }
 
 }

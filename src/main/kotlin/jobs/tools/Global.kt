@@ -7,6 +7,9 @@ import java.io.PrintStream
 import java.util.*
 
 
+/**
+ * Not working if project run from Tests.
+ */
 object ConsoleScanner {
     private var exit = false
 
@@ -34,8 +37,8 @@ object ConsoleScanner {
 
 class PrintStreamProxyWriteToFile(printStream: PrintStream, private val file: File) : PrintStream(printStream) {
 
-    override fun println(x: String?): Unit = (x ?: "null").also(::fileAppendLine).run { super.println(x) }
-    override fun println(x: Any?): Unit = x.toString().also(::fileAppendLine).run { super.println(x as String) }
+    override fun println(x: String?): Unit = (x ?: "null").also(::fileAppendLine).run { super.println(this) }
+    override fun println(x: Any?): Unit = x.toString().also(::fileAppendLine).run { super.println(this) }
     override fun printf(format: String, vararg args: Any?): PrintStream =
         String.format(format, *args).also(::fileAppend).let { super.printf(format, *args) }
 

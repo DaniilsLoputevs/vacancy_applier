@@ -8,12 +8,12 @@ import java.util.concurrent.TimeUnit
 interface VacancyProcessor {
     var successApplicationCounter: Int
     val canContinueProcess: Boolean
-    fun process(driver: RemoteWebDriver, rsl: VacancyApplicationResult)
+    fun process(driver: RemoteWebDriver, rsl: ApplicationResult)
 }
 
 class VacancyApplierSafe(private val applier: VacancyProcessor) : VacancyProcessor by applier {
 
-    override fun process(driver: RemoteWebDriver, rsl: VacancyApplicationResult) {
+    override fun process(driver: RemoteWebDriver, rsl: ApplicationResult) {
         val startTime = System.currentTimeMillis()
         try {
             applier.process(driver, rsl)
@@ -21,7 +21,7 @@ class VacancyApplierSafe(private val applier: VacancyProcessor) : VacancyProcess
             println("ERR: ${rsl.link} - ${exception.javaClass.simpleName}")
             exception.printStackTrace(System.out) // Пишем в обычный лог, что бы не терять Последовательность.
             rsl.applyException = exception
-            rsl.applyStatus = VacancyApplicationResult.Status.EXCEPTION
+            rsl.applyStatus = ApplicationResult.Status.EXCEPTION
             driver.openNewTab() // оставляем открытой вкладку с exception - что бы позже Ручками разобраться
         } finally {
             val endTime = System.currentTimeMillis()

@@ -1,6 +1,6 @@
 package jobs.hh
 
-import jobs.core.VacancyApplicationResult
+import jobs.core.ApplicationResult
 import jobs.core.VacancyProcessor
 import jobs.tools.openNewTab
 import jobs.tools.tryWaitUntilClickableThenClick
@@ -14,20 +14,20 @@ class VacancyApplierHH(private val coverLetter: String) : VacancyProcessor {
     /** HH.ru have 24 hours limit for vacancy application : 200 application for vacancy from one user. */
     override val canContinueProcess: Boolean get() = successApplicationCounter <= 200
 
-    override fun process(driver: RemoteWebDriver, rsl: VacancyApplicationResult) {
+    override fun process(driver: RemoteWebDriver, rsl: ApplicationResult) {
         driver.get(rsl.link)
         when (isVacancyAppliedBefore(driver)) {
             false -> applyLogic(driver, rsl)
             true -> {
                 println("APPLIED_BEFORE :: RUN")
-                rsl.applyStatus = VacancyApplicationResult.Status.APPLIED_BEFORE
+                rsl.applyStatus = ApplicationResult.Status.APPLIED_BEFORE
                 println("APPLIED_BEFORE :: END")
             }
         }
         println("STATUS       : ${rsl.applyStatus}")
     }
 
-    private fun applyLogic(driver: RemoteWebDriver, rsl: VacancyApplicationResult) {
+    private fun applyLogic(driver: RemoteWebDriver, rsl: ApplicationResult) {
         println("APPLIED_NOW :: RUN")
         driver.findElement(By.cssSelector("a[href*='/applicant/vacancy_response?vacancyId=']"))
             .click() // click on apply button
@@ -43,11 +43,11 @@ class VacancyApplierHH(private val coverLetter: String) : VacancyProcessor {
         driver.findElement(By.cssSelector("button[data-qa='vacancy-response-submit-popup']")).click()
 
         if (driver.currentUrl == rsl.link) {
-            rsl.applyStatus = VacancyApplicationResult.Status.APPLIED_NOW
+            rsl.applyStatus = ApplicationResult.Status.APPLIED_NOW
             rsl.applyOrder = successApplicationCounter++
             println("APPLIED_NOW :: END - APPLIED")
         } else {
-            rsl.applyStatus = VacancyApplicationResult.Status.QUESTIONS
+            rsl.applyStatus = ApplicationResult.Status.QUESTIONS
             driver.openNewTab() // оставляем открытой вкладку с вопросами или Непонятными ситуациями
             println("APPLIED_NOW :: END - QUESTIONS")
         }

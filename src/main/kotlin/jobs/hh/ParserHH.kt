@@ -4,19 +4,12 @@ import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.response
 import it.skrape.fetcher.skrape
+import jobs.core.ApplicationResult
 import jobs.core.PlatformParser
-import jobs.core.VacancyApplicationResult
 import jobs.core.VacancyPageParser
 import jobs.tools.TimeMarker
 import jobs.tools.tryAnyException
 import java.util.concurrent.CompletableFuture
-
-// todo - ээээм... а как это блин парсить на другом языке?
-val HH_PAGE_USELESS_ELEMENT_TEXT_LIST = setOf(
-    "По вашему запросу ещё будут появляться новые вакансии. Присылать вам?",
-    "Быстрые фильтры",
-    "Как вам результаты поиска?",
-)
 
 class ScrapItHHParser(hhBaseSearchUrl: String) : PlatformParser<HHPageParser> {
     /**
@@ -69,12 +62,15 @@ class ScrapItHHParser(hhBaseSearchUrl: String) : PlatformParser<HHPageParser> {
 class HHPageParser(val hhPageUrl: String) : VacancyPageParser {
     private val vacancies = tryAnyException({ takeAllH3ElementsOnPage(hhPageUrl) }, { emptyList() })
         .asSequence()
-        .filter { it.text !in HH_PAGE_USELESS_ELEMENT_TEXT_LIST }
+        /* filter useless elements from list like "do you want to receive an email notification?"
+        * useless elements don't have a children elements. */
+        .filter { it.children.isNotEmpty() }
         .map {
-            VacancyApplicationResult(
+            ApplicationResult(
                 it.text,
                 it.children[0].children[0].attribute("href")
-                    // Обрезаем ссылку, что бы в итоговой таблице занимала меньше места в ширь.
+                    /* before : "https://hh.ru/vacancy/80504067?from=vacancy_search_list&query=Java"
+                    *  after  : "https://hh.ru/vacancy/80504067" - hh link compact format */
                     .let { link -> link.substring(0, link.indexOf("?")) },
             )
         }
@@ -84,5 +80,5 @@ class HHPageParser(val hhPageUrl: String) : VacancyPageParser {
         return@skrape response { htmlDocument { findAll("h3") } }
     }
 
-    override operator fun iterator(): Iterator<VacancyApplicationResult> = vacancies.iterator()
+    override operator fun iterator(): Iterator<ApplicationResult> = vacancies.iterator()
 }

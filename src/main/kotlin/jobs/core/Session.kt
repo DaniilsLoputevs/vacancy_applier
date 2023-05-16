@@ -8,8 +8,16 @@ import java.io.PrintStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class Session(private val workDirAbsolutePath: String, isDebug: Boolean = false) : AutoCloseable {
-    private val originalSystemOut: PrintStream = System.out // todo - check
+/**
+ * Private primary constructor -> use
+ */
+class Session(
+    private val workDirAbsolutePath: String,
+    isDebug: Boolean = false,
+    pipelinesExeRunDsl: Session.() -> Unit
+) : AutoCloseable {
+
+    private val originalSystemOut: PrintStream = System.out
 
     val logDirPath = sureExistsFilePath("${workDirAbsolutePath}/logs")
     val appliedBeforeDirPath = sureExistsFilePath("${workDirAbsolutePath}/applied_before")
@@ -22,18 +30,16 @@ class Session(private val workDirAbsolutePath: String, isDebug: Boolean = false)
         val logFile = File("${logDirPath}/${logFileName}")
 
         System.setOut(PrintStreamProxyWriteToFile(System.out, logFile))
+
+        this.use { pipelinesExeRunDsl() }
     }
 
-    override fun close() {
-        System.setOut(originalSystemOut)
-    }
 
-}
+    /**
+     * this Session scope execute pipeline with config as argument.
+     */
+    fun <T : Config> exe(pipeline: VacancyApplyPipeline<T>, config: T) = pipeline.execute(config, this)
 
-fun <T> Session.exe(pipeline: VacancyApplyPipeline<T>, config: T) where T : Config =
-    pipeline.execute(config, this)
+    override fun close() = System.setOut(originalSystemOut)
 
-
-fun session(workDirAbsolutePath: String, isDebug: Boolean = false, dsl: Session.() -> Unit) {
-    Session(workDirAbsolutePath, isDebug).use { it.dsl() }
 }

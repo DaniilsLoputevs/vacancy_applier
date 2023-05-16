@@ -18,9 +18,10 @@ fun doLoginEmailAndPasswordHH(driver: RemoteWebDriver, loginDetails: EmailPasswo
     driver.findElement(By.cssSelector("input[data-qa='login-input-password']")).sendKeys(loginDetails.password)
     driver.findElement(By.cssSelector("button[data-qa='account-login-submit']")).submit()
 
-    println("Вам нужно нажать \"Войти\", пройти Captcha и нажать \"Войти\" снова - на это у вас ${loginDetails.captchaWaitingSec} секунд")
+    println("You need press \"Login\" button then pass the Captcha then press \"Login\" button again. " +
+            "For this you have: ${loginDetails.captchaWaitingSec} seconds.")
     driver.waitUntilClickable(loginDetails.captchaWaitingSec, By.cssSelector("button[data-qa='search-button']"))
-    println("Captcha пройдена, ожидаем загрузки \"Базовая страница поиска\". Возможно ожидание")
+    println("Captcha is passed, waiting for complete loading \"base search link\".")
     println("LOGIN :: END")
 }
 
