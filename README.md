@@ -33,7 +33,7 @@
 
 ```
     @Test fun runExampleHH() {
-        session(workDirPath) {
+        Session(workDirPath) {
             exe(PrimaryPipelineHH, ExampleConfigHH)
         }
     }

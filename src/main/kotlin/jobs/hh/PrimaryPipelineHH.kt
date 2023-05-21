@@ -81,7 +81,7 @@ object PrimaryPipelineHH : VacancyApplyPipeline<ConfigHH> {
         println("PIPELINE# update store of applied_before vacancies :: RUN")
         val newAppliedBeforeVacancies = sequenceOf(
             result[ApplicationResult.Status.APPLIED_NOW],
-            result[ApplicationResult.Status.APPLIED_NOW]
+            result[ApplicationResult.Status.APPLIED_BEFORE]
         ).flatten().toList()
         appliedBeforeVacanciesLoader.writeAppendAll(newAppliedBeforeVacancies)
         println("PIPELINE# update store of applied_before vacancies :: END")
